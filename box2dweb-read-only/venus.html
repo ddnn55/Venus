@@ -14,10 +14,12 @@ html, body {
    </body>
    <script type="text/javascript" src="http://box2dweb.googlecode.com/svn/trunk/Box2d.min.js"></script>
    <script type="text/javascript">
-      
+     
+      var bite;
+
       function init() {
 
-         var rows = 2, cols = 10;
+         var rows = 2, cols = 10, radius = 0.5;
 
          var canvas = document.getElementById('canvas');
 
@@ -44,7 +46,7 @@ html, body {
             ;
          
          var world = new b2World(
-               new b2Vec2(0, 10)    //gravity
+               new b2Vec2(0, 0)    //gravity
             ,  true                 //allow sleep
          );
          
@@ -79,11 +81,11 @@ html, body {
             for(var c = 0; c < cols; ++c) {
                   
 	       fixDef.shape = new b2CircleShape(
-                  0.5 //radius
+                  radius //radius
                );
 
                bodyDef.position.x = 3 + c * 2;
-               bodyDef.position.y = 3 + r * 2;
+               bodyDef.position.y = worldHeight/2.0 + r * 2;
                var newCell = world.CreateBody(bodyDef);
 	       newCell.CreateFixture(fixDef);
 	       cells[r].push(newCell);
@@ -104,7 +106,6 @@ html, body {
                   j.bodyA = cells[r][c];
                   j.bodyB = cells[r-1][c];
                   var distanceJoint = world.CreateJoint(j);
-                  //body.SetAwake(true);
 
 	       }
             
@@ -114,8 +115,9 @@ html, body {
                   j.bodyB = cells[r][c-1];
 
                   var distanceJoint = world.CreateJoint(j);
-                  //body.SetAwake(true);
 	       }
+
+	       cells[r][c].SetAwake(true);
 	    }
 	 }
 
@@ -175,7 +177,21 @@ html, body {
             }
             return true;
          }
-         
+        
+         bite = function() {
+	    for(var c = 0; c < cols; c++) {
+	       var joints = cells[0][c].GetJointList();
+               for(var j in joints) {
+                  if(joints[j] !== null && 'joint' in joints[j]) {
+		     var joint = joints[j].joint;
+		     joint.SetLength(radius * 1);
+		  }
+	       }
+	       cells[0][c].SetAwake(true);
+	    }
+            return 'bit';
+	 }
+
          //update
          
          function update() {
@@ -203,7 +219,7 @@ html, body {
                }
             }
          
-            world.Step(1 / 60, 10, 10);
+            world.Step(1 / 30, 10, 10);
             world.DrawDebugData();
             world.ClearForces();
          };
@@ -231,6 +247,8 @@ html, body {
             return {x: x, y: y};
          }
 
+
+         window.setTimeout(bite, 1000);
 
       };
    
