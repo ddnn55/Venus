@@ -181,7 +181,6 @@ html, body {
          bite = function() {
 
             function setRowJoints(row, length) {
-
 	       for(var c = 0; c < cols; c++) {
 	          var joints = cells[row][c].GetJointList();
                   for(var j in joints) {
@@ -193,9 +192,24 @@ html, body {
 	          cells[0][c].SetAwake(true);
 	       }
 	    }
-	    setRowJoints(0, radius * 2);
-	    setRowJoints(1, radius * 5);
-            return 'bit';
+
+            function setRowCells(row, radius) {
+	       for(var c = 0; c < cols; c++) {
+	          cells[row][c].GetFixtureList().GetShape().SetRadius(radius);
+                  cells[0][c].SetAwake(true);
+	       }
+	    }
+
+            var insideScale = 0.5;
+	    var outsideScale = 1.5;
+
+	    setRowJoints(0, 2 * radius * insideScale);
+	    setRowJoints(1, 2 * radius * outsideScale);
+            
+	    setRowCells(0, radius * insideScale);
+	    setRowCells(1, radius * outsideScale);
+	    
+	    return 'bit';
 	 }
 
          //update
