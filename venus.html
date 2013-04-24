@@ -179,16 +179,22 @@ html, body {
          }
         
          bite = function() {
-	    for(var c = 0; c < cols; c++) {
-	       var joints = cells[0][c].GetJointList();
-               for(var j in joints) {
-                  if(joints[j] !== null && 'joint' in joints[j]) {
-		     var joint = joints[j].joint;
-		     joint.SetLength(radius * 2);
-		  }
+
+            function setRowJoints(row, length) {
+
+	       for(var c = 0; c < cols; c++) {
+	          var joints = cells[row][c].GetJointList();
+                  for(var j in joints) {
+                     if(joints[j] !== null && 'joint' in joints[j]) {
+	                var joint = joints[j].joint;
+	                joint.SetLength(length);
+	             }
+	          }
+	          cells[0][c].SetAwake(true);
 	       }
-	       cells[0][c].SetAwake(true);
 	    }
+	    setRowJoints(0, radius * 2);
+	    setRowJoints(1, radius * 5);
             return 'bit';
 	 }
 
