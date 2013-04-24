@@ -13,3 +13,4 @@ done
 echo "];" >> ~/Dropbox/Public/Venus/refs.js
 
 cp index.html ~/Dropbox/Public/Venus/
+cp Box2d.min.js ~/Dropbox/Public/Venus/

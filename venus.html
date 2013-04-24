@@ -19,7 +19,7 @@ html, body {
 
       function init() {
 
-         var rows = 2, cols = 10, radius = 0.5;
+         var rows = 2, cols = 20, radius = 0.5;
 
          var canvas = document.getElementById('canvas');
 
@@ -81,10 +81,10 @@ html, body {
             for(var c = 0; c < cols; ++c) {
                   
 	       fixDef.shape = new b2CircleShape(
-                  radius //radius
+                  radius
                );
 
-               bodyDef.position.x = 3 + c * 2;
+               bodyDef.position.x = 3 + c * 1.5;
                bodyDef.position.y = worldHeight/2.0 + r * 2;
                var newCell = world.CreateBody(bodyDef);
 	       newCell.CreateFixture(fixDef);
@@ -184,7 +184,7 @@ html, body {
                for(var j in joints) {
                   if(joints[j] !== null && 'joint' in joints[j]) {
 		     var joint = joints[j].joint;
-		     joint.SetLength(radius * 1);
+		     joint.SetLength(radius * 3);
 		  }
 	       }
 	       cells[0][c].SetAwake(true);
