@@ -39,6 +39,10 @@ Cell.prototype.Touched = function(something) {
 }
 
 Cell.prototype.Contract = function() {
+  
+  this.body.GetFixtureList().GetShape().SetRadius(0.5);
+  this.body.SetAwake(true);
+
   for(var b in this.bonds) {
     this.bonds[b].Contract();
   }

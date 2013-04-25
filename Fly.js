@@ -14,6 +14,9 @@ var   b2Vec2 = Box2D.Common.Math.b2Vec2
    ;
 
 function Fly(x, y, radius) {
+   this.img = new Image();   // Create new img element
+   this.img.src = 'FLY.gif'; // Set source path
+
    var fixDef = new b2FixtureDef;
    fixDef.density = 1.0;
    fixDef.friction = 0.5;
@@ -32,3 +35,6 @@ function Fly(x, y, radius) {
    this.body.SetUserData(this);
 }
 
+Fly.prototype.Draw = function(ctx) {
+  ctx.drawImage(this.img, this.body.GetPosition().x, this.body.GetPosition().y);
+}

@@ -22,7 +22,7 @@ html, body {
 
       function init() {
 
-         var rows = 2, cols = 15, radius = 0.5;
+         var rows = 2, cols = 15, radius = 1.0;
 
          var canvas = document.getElementById('canvas');
 
@@ -105,8 +105,10 @@ html, body {
 	 var fly = new Fly(10, 5, 0.4);
 
          //setup debug draw
+         var ctx = document.getElementById("canvas").getContext("2d");
+
          var debugDraw = new b2DebugDraw();
-			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+			debugDraw.SetSprite(ctx);
 			debugDraw.SetDrawScale(30.0);
 			debugDraw.SetFillAlpha(0.5);
 			debugDraw.SetLineThickness(1.0);
