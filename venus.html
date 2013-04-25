@@ -13,13 +13,15 @@ html, body {
       <canvas id="canvas" width="1000" height="800" style="background-color:#333333;" ></canvas>
    </body>
    <script type="text/javascript" src="Box2d.min.js"></script>
+   <script type="text/javascript" src="VenusCell.js"></script>
+   <script type="text/javascript" src="VenusBond.js"></script>
    <script type="text/javascript">
      
-      var bite;
+      var bite, world;
 
       function init() {
 
-         var rows = 2, cols = 20, radius = 0.5;
+         var rows = 2, cols = 15, radius = 0.5;
 
          var canvas = document.getElementById('canvas');
 
@@ -45,7 +47,7 @@ html, body {
                 ,	b2DistanceJointDef =  Box2D.Dynamics.Joints.b2DistanceJointDef
             ;
          
-         var world = new b2World(
+         world = new b2World(
                new b2Vec2(0, 0)    //gravity
             ,  true                 //allow sleep
          );
@@ -75,49 +77,25 @@ html, body {
          
          
 	 // create grid of cells
-         bodyDef.type = b2Body.b2_dynamicBody;
          for(var r = 0; r < rows; ++r) {
 	    cells.push([]);
             for(var c = 0; c < cols; ++c) {
-                  
-	       fixDef.shape = new b2CircleShape(
-                  radius
-               );
-
-               bodyDef.position.x = 3 + c * 1.5;
-               bodyDef.position.y = worldHeight/2.0 + r * 2;
-               var newCell = world.CreateBody(bodyDef);
-	       newCell.CreateFixture(fixDef);
+	       var newCell = new Cell(3 + c * 1.5, worldHeight/2.0 + r * 2, radius);
 	       cells[r].push(newCell);
 	    }
          }
-        
+       
+         // connect cells
          for(var r = 0; r < rows; ++r) {
             for(var c = 0; c < cols; ++c) {
 
-               var j = new b2DistanceJointDef();
-	       j.collideConnected = true;
-	       j.length = 2.0;
-	       j.dampingRatio = 0.9;
-	       j.frequencyHz = 2;
-
 	       if(r > 0)
-	       {
-                  j.bodyA = cells[r][c];
-                  j.bodyB = cells[r-1][c];
-                  var distanceJoint = world.CreateJoint(j);
-
-	       }
+                  var newBond = new Bond(cells[r][c], cells[r-1][c]);
             
                if(c > 0)
-	       {
-                  j.bodyA = cells[r][c];
-                  j.bodyB = cells[r][c-1];
+		  var newBond = new Bond(cells[r][c], cells[r][c-1]);
 
-                  var distanceJoint = world.CreateJoint(j);
-	       }
-
-	       cells[r][c].SetAwake(true);
+	       //cells[r][c].SetAwake(true);
 	    }
 	 }
 
@@ -182,21 +160,21 @@ html, body {
 
             function setRowJoints(row, length) {
 	       for(var c = 0; c < cols; c++) {
-	          var joints = cells[row][c].GetJointList();
+	          var joints = cells[row][c].body.GetJointList();
                   for(var j in joints) {
                      if(joints[j] !== null && 'joint' in joints[j]) {
 	                var joint = joints[j].joint;
 	                joint.SetLength(length);
 	             }
 	          }
-	          cells[0][c].SetAwake(true);
+	          cells[0][c].body.SetAwake(true);
 	       }
 	    }
 
             function setRowCells(row, radius) {
 	       for(var c = 0; c < cols; c++) {
-	          cells[row][c].GetFixtureList().GetShape().SetRadius(radius);
-                  cells[0][c].SetAwake(true);
+	          cells[row][c].body.GetFixtureList().GetShape().SetRadius(radius);
+                  cells[0][c].body.SetAwake(true);
 	       }
 	    }
 
