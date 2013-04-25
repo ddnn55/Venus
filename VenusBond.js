@@ -14,6 +14,9 @@ var   b2Vec2 = Box2D.Common.Math.b2Vec2
    ;
 
 function Bond(cellA, cellB) {
+   cellA.bonds.push(this);
+   cellB.bonds.push(this);
+
    var j = new b2DistanceJointDef();
    j.collideConnected = true;
    j.length = 2.0;
@@ -24,4 +27,8 @@ function Bond(cellA, cellB) {
    j.bodyB = cellB.body;
 
    this.joint = world.CreateJoint(j);
+}
+
+Bond.prototype.Contract = function() {
+  this.joint.SetLength(1.0);
 }

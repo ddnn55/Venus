@@ -15,6 +15,7 @@ html, body {
    <script type="text/javascript" src="Box2d.min.js"></script>
    <script type="text/javascript" src="VenusCell.js"></script>
    <script type="text/javascript" src="VenusBond.js"></script>
+   <script type="text/javascript" src="Fly.js"></script>
    <script type="text/javascript">
      
       var bite, world;
@@ -43,8 +44,9 @@ html, body {
          	,	b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
          	,	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
          	,	b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-                ,	b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-                ,	b2DistanceJointDef =  Box2D.Dynamics.Joints.b2DistanceJointDef
+            ,	b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+            ,	b2DistanceJointDef =  Box2D.Dynamics.Joints.b2DistanceJointDef
+            ,  b2ContactListener = Box2D.Dynamics.b2ContactListener
             ;
          
          world = new b2World(
@@ -99,6 +101,9 @@ html, body {
 	    }
 	 }
 
+         // create fly
+	 var fly = new Fly(10, 5, 0.4);
+
          //setup debug draw
          var debugDraw = new b2DebugDraw();
 			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
@@ -109,7 +114,20 @@ html, body {
 			world.SetDebugDraw(debugDraw);
          
          window.setInterval(update, 1000 / 60);
-         
+        
+
+         // contact listener
+	      var contact = new b2ContactListener;
+         contact.BeginContact = function(contact) {
+            var a = contact.GetFixtureA().GetBody().GetUserData(),
+                b = contact.GetFixtureB().GetBody().GetUserData();
+            if(a instanceof Fly && b instanceof Cell)
+               b.Touched(a);
+            else if(b instanceof Fly && a instanceof Cell)
+               a.Touched(b);
+         };
+         world.SetContactListener(contact);
+
          //mouse
          
          var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint;
@@ -156,42 +174,8 @@ html, body {
             return true;
          }
         
-         bite = function() {
-
-            function setRowJoints(row, length) {
-	       for(var c = 0; c < cols; c++) {
-	          var joints = cells[row][c].body.GetJointList();
-                  for(var j in joints) {
-                     if(joints[j] !== null && 'joint' in joints[j]) {
-	                var joint = joints[j].joint;
-	                joint.SetLength(length);
-	             }
-	          }
-	          cells[0][c].body.SetAwake(true);
-	       }
-	    }
-
-            function setRowCells(row, radius) {
-	       for(var c = 0; c < cols; c++) {
-	          cells[row][c].body.GetFixtureList().GetShape().SetRadius(radius);
-                  cells[0][c].body.SetAwake(true);
-	       }
-	    }
-
-            var insideScale = 0.5;
-	    var outsideScale = 1.5;
-
-	    setRowJoints(0, 2 * radius * insideScale);
-	    setRowJoints(1, 2 * radius * outsideScale);
-            
-	    setRowCells(0, radius * insideScale);
-	    setRowCells(1, radius * outsideScale);
-	    
-	    return 'bit';
-	 }
 
          //update
-         
          function update() {
          
             if(isMouseDown && (!mouseJoint)) {
@@ -245,8 +229,6 @@ html, body {
             return {x: x, y: y};
          }
 
-
-         window.setTimeout(bite, 1000);
 
       };
    

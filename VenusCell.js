@@ -14,6 +14,8 @@ var   b2Vec2 = Box2D.Common.Math.b2Vec2
    ;
 
 function Cell(x, y, radius) {
+   this.bonds = [];
+
    var fixDef = new b2FixtureDef;
    fixDef.density = 1.0;
    fixDef.friction = 0.5;
@@ -30,4 +32,14 @@ function Cell(x, y, radius) {
    this.body = world.CreateBody(bodyDef);
    this.body.CreateFixture(fixDef);
    this.body.SetUserData(this);
+}
+
+Cell.prototype.Touched = function(something) {
+  this.Contract();
+}
+
+Cell.prototype.Contract = function() {
+  for(var b in this.bonds) {
+    this.bonds[b].Contract();
+  }
 }
