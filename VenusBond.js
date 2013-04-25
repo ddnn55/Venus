@@ -24,7 +24,7 @@ function Bond(cellA, cellB, angle) {
   j.collideConnected = true;
   j.length = 2.0;
   j.dampingRatio = 0.9;
-  j.frequencyHz = 2;
+  j.frequencyHz = 5;
 
   j.bodyA = cellA.body;
   j.bodyB = cellB.body;

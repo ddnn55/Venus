@@ -21,8 +21,7 @@ function Cell(x, y, radius, isSensitive) {
   fixDef.density = 1.0;
   fixDef.friction = 0.5;
   fixDef.restitution = 0.2;
-  fixDef.shape = new b2CircleShape(
-  radius);
+  fixDef.shape = new b2CircleShape(radius);
 
   var bodyDef = new b2BodyDef;
   bodyDef.type = b2Body.b2_dynamicBody;
