@@ -89,7 +89,7 @@
              for (var r = 0; r < rows; ++r) {
                  cells.push([]);
                  for (var c = 0; c < cols; ++c) {
-                     var newCell = new Cell(3 + c * 1.5, worldHeight / 2.0 + r * 2, radius, r == 0);
+                     var newCell = new Cell(5 + c * 2 * radius, worldHeight / 2.0 + r * 2, radius, r == 0);
                      cells[r].push(newCell);
                      updates.push(newCell);
                  }
