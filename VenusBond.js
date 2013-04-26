@@ -32,9 +32,32 @@ function Bond(cellA, cellB, angle) {
   this.joint = world.CreateJoint(j);
 }
 
+Bond.prototype.update = function(now) {
+  if('animation' in this) {
+    var progress = (now - this.animation.start.time) / (this.animation.end.time - this.animation.start.time);
+    this.joint.SetLength( this.animation.start.length + progress * (this.animation.end.length - this.animation.start.length) );
+
+    if(now >= this.animation.end.time)
+      delete this.animation;
+  }
+}
+
 Bond.prototype.Contract = function(sender) {
   if(this.angle == 0.0) {
-    this.joint.SetLength(1.0);
+
+    var now = Date.now() / 1000.0;
+
+    this.animation = {
+      start : {
+        time : now,
+        length : this.joint.GetLength()
+      },
+      end : {
+        time : now + Venus.ContractTime,
+        length : 1.0
+      }
+    };
+
     if (sender === this.cellA)
       this.cellB.Contract(this);
     else

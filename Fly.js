@@ -33,6 +33,10 @@ function Fly(x, y, radius) {
   this.body.SetUserData(this);
 }
 
+Fly.prototype.update = function(now) {
+  
+}
+
 Fly.prototype.Draw = function(ctx) {
   var scale = 0.15;
 

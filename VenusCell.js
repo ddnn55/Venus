@@ -33,6 +33,18 @@ function Cell(x, y, radius, isSensitive) {
   this.body.SetUserData(this);
 }
 
+Cell.prototype.update = function(now) {
+  if('animation' in this) {
+    var progress = (now - this.animation.start.time) / (this.animation.end.time - this.animation.start.time);
+    this.body.GetFixtureList().GetShape().SetRadius( this.animation.start.radius + progress * (this.animation.end.radius - this.animation.start.radius) );
+    this.body.SetAwake(true);
+
+    if(now >= this.animation.end.time)
+      delete this.animation;
+  }
+
+}
+
 Cell.prototype.Touched = function(something) {
   if (this.isSensitive)
     this.Contract(this);
@@ -40,8 +52,18 @@ Cell.prototype.Touched = function(something) {
 
 Cell.prototype.Contract = function(sender) {
 
-  this.body.GetFixtureList().GetShape().SetRadius(0.5);
-  this.body.SetAwake(true);
+  var now = Date.now() / 1000.0;
+
+  this.animation = {
+    start : {
+      time : now,
+      radius : this.body.GetFixtureList().GetShape().GetRadius()
+    },
+    end : {
+      time : now + Venus.ContractTime,
+      radius : 0.5
+    }
+  };
 
   for (var b in this.bonds) {
     if (this.bonds[b] !== sender)
