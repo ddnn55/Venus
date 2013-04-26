@@ -31,10 +31,24 @@ function Fly(x, y, radius) {
   this.body = world.CreateBody(bodyDef);
   this.body.CreateFixture(fixDef);
   this.body.SetUserData(this);
+
+  this.directionNoise = new SimplexNoise();
+  this.magnitudeNoise = new SimplexNoise();
 }
 
 Fly.prototype.update = function(now) {
-  
+
+  var noiseX = Math.sin(2.3 * now),
+      noiseY = Math.sin(0.7 * now - 0.1);
+
+  var direction = Math.PI * this.directionNoise.noise(noiseX, noiseY);
+  var magnitude = 10.0 * this.magnitudeNoise.noise(noiseX, noiseY);
+
+  var force = new b2Vec2(
+    magnitude * Math.cos( direction ),
+    magnitude * Math.sin( direction )
+  );
+  this.body.ApplyForce(force, this.body.GetPosition());
 }
 
 Fly.prototype.Draw = function(ctx) {
