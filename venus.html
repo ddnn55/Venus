@@ -22,7 +22,8 @@
              var bite, world;
 
          var Venus = {
-            ContractTime : 0.1
+            ContractTime : 0.1,
+            FlyCount : 1
          };
 
          function init() {
@@ -38,7 +39,7 @@
 
              console.log(worldWidth, worldHeight);
 
-             var cells = [], updates = [];
+             var cells = [], flys = [], updates = [];
 
 
              var b2Vec2 = Box2D.Common.Math.b2Vec2,
@@ -108,8 +109,12 @@
              }
 
              // create fly
-             var fly = new Fly(10, 5, 0.4);
-             updates.push(fly);
+             for(var f = 0; f < Venus.FlyCount; f++) {
+               var fly = new Fly(10, 5, 0.4);
+               updates.push(fly);
+               flys.push(fly);
+             }
+
 
              //setup debug draw
              var ctx = document.getElementById("canvas").getContext("2d");
@@ -219,7 +224,7 @@
  
                 world.Step(step, 10, 10);
                 world.DrawDebugData();
-                fly.Draw(ctx);
+                flys.forEach(function(f) { f.Draw(ctx); });
                 world.ClearForces();
              };
 

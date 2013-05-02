@@ -60,14 +60,10 @@ Fly.prototype.Draw = function(ctx) {
   var velocity = this.body.GetLinearVelocity();
   var angle = Math.atan2(velocity.y, velocity.x);
 
-
-
   ctx.save();
-
     ctx.translate(30.0 * this.body.GetPosition().x, 30.0 * this.body.GetPosition().y);
     ctx.rotate(angle + Math.PI/2.0);
     ctx.translate(-width/2.0, -height/2.0)
     ctx.drawImage(this.img, 0.0, 0.0, width, height);
-
   ctx.restore();
 }
