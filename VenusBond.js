@@ -40,6 +40,12 @@ Bond.prototype.update = function(now) {
     if(now >= this.animation.end.time)
       delete this.animation;
   }
+
+  if (this.queuedMessage && now >= this.queuedMessage.time) {
+    this.queuedMessage.target.Contract(this);
+    delete this.queuedMessage;
+  };
+  
 }
 
 Bond.prototype.Contract = function(sender) {
@@ -58,10 +64,14 @@ Bond.prototype.Contract = function(sender) {
       }
     };
 
+    var targetCell;
     if (sender === this.cellA)
-      this.cellB.Contract(this);
+      targetCell = this.cellB;
     else
-      this.cellA.Contract(this);
+      targetCell = this.cellA;
+    this.queuedMessage = {
+      target: targetCell,
+      time: now + Venus.MessageDelay
+    }
   }
-
 }
