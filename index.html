@@ -1,0 +1,26 @@
+<html>
+<head>
+<style>
+#tags {
+   float: right;
+}
+</style>
+</head>
+<body>
+
+<ol id="tags"></ol>
+
+<iframe width="1000" height="800" name="frame"></iframe>
+
+
+<script src="refs.js"></script>
+<script>
+var tags = document.getElementById('tags');
+for(var r in refs) {
+   tags.appendChild(document.createElement('li'))
+          .innerHTML = '<a href="'+refs[r]+'/venus.html" target="frame">'+refs[r]+'</a>';
+}
+</script>
+
+</body>
+</html>
