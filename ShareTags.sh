@@ -1,18 +1,27 @@
 #!/bin/sh
 
-echo "var refs=[\n" > ~/Dropbox/Public/Venus/refs.js
+#target_dir=~/Dropbox/Public/Venus
+target_dir=gh-pages
+
+mkdir -p $target_dir
+echo "var refs=[\n" > $target_dir/refs.js
 
 git for-each-ref --format="%(objectname)" refs/tags | \
 while read entry
 do
-        mkdir -p ~/Dropbox/Public/Venus/$entry
-        git archive $entry | tar -x -C ~/Dropbox/Public/Venus/$entry
-        rm ~/Dropbox/Public/Venus/$entry/index.html
+        mkdir -p $target_dir/$entry
+        git archive $entry | tar -x -C $target_dir/$entry
 
-	    echo "  '$entry',\n" >> ~/Dropbox/Public/Venus/refs.js
+        rm $target_dir/$entry/index.html
+        rm $target_dir/$entry/ShareTags.sh
+        rm $target_dir/$entry/README.md
+        rm $target_dir/$entry/.gitignore
+        rm $target_dir/$entry/Box2D.js
+
+	    echo "  '$entry',\n" >> $target_dir/refs.js
         #echo $ref
 done
 
-echo "];" >> ~/Dropbox/Public/Venus/refs.js
+echo "];" >> $target_dir/refs.js
 
-cp index.html ~/Dropbox/Public/Venus/
+cp index.html $target_dir/
